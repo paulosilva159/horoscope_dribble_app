@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 
-class GyroscopeEvent {
-  GyroscopeEvent({
+class GyroscopeEventValues {
+  GyroscopeEventValues({
     @required this.x,
     @required this.y,
     @required this.z,

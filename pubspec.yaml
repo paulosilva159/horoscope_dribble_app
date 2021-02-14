@@ -9,6 +9,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
+  rxdart: ^0.25.0
   sensors: '>=0.4.2+6 <2.0.0'
   domain:
     path: ./domain
