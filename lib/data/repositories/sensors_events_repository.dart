@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:domain/data_repository/sensors_events_data_repository.dart';
 import 'package:domain/model/gyroscope_event_values.dart';
 import 'package:horoscope_dribble_app/data/sensors_events/data_source/sensors_events_data_source.dart';

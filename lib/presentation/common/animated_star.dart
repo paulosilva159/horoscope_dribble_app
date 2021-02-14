@@ -90,7 +90,7 @@ class _AnimatedStarState extends State<AnimatedStar>
                   glowRadiusProportion: _glowRadiusProportion),
               smallerArmGroupParams: StarArmGroupParams(
                   centerOffset: widget.starCenterOffset,
-                  angle: -_angle + pi / 3,
+                  angle: _angle + pi / 18,
                   colorList: widget.starColorList,
                   armsSize: Size(_size, _size * 2),
                   glowRadiusProportion: _glowRadiusProportion),

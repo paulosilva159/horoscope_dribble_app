@@ -1,12 +1,24 @@
+import 'package:domain/use_case/rotate_phone_uc.dart';
 import 'package:flutter/material.dart';
+import 'package:horoscope_dribble_app/data/repositories/sensors_events_repository.dart';
+import 'package:horoscope_dribble_app/data/sensors_events/data_source/sensors_events_data_source.dart';
+import 'package:horoscope_dribble_app/presentation/home/home_bloc.dart';
 
 import 'presentation/home/home_screen.dart';
 
 void main() {
+  final homeBloc = HomeBloc(
+    rotatePhoneUC: RotatePhoneUC(
+        repository:
+            SensorsEventsRepository(dataSource: SensorsEventsDataSource())),
+  );
+
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
+      home: HomeScreen(
+        bloc: homeBloc,
+      ),
     ),
   );
 }
