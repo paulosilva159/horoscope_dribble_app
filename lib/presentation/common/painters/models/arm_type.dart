@@ -1,0 +1,4 @@
+enum ArmType {
+  point,
+  rounded,
+}

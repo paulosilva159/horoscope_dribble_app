@@ -1,0 +1,4 @@
+enum AngleType {
+  degree,
+  radian,
+}
