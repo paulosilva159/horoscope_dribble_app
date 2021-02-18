@@ -12,7 +12,7 @@ import 'package:horoscope_dribble_app/presentation/home/home_bloc.dart';
 import 'package:horoscope_dribble_app/presentation/home/home_state.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({@required this.bloc}) : assert(bloc != null);
+  const HomeScreen({@required this.bloc}) : assert(bloc != null);
 
   final HomeBloc bloc;
 
