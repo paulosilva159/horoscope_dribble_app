@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:domain/model/gyroscope_event_values.dart';
 import 'package:flutter/material.dart';
-import 'package:horoscope_dribble_app/presentation/common/animated_star.dart';
+import 'package:horoscope_dribble_app/presentation/common/animatable_star.dart';
 import 'package:horoscope_dribble_app/presentation/common/rotatable_star.dart';
 import 'package:horoscope_dribble_app/presentation/common/signs/animated_cancer_sign.dart';
 import 'package:horoscope_dribble_app/presentation/common/sky_background_view.dart';
@@ -11,11 +11,17 @@ import 'package:horoscope_dribble_app/presentation/common/utils/random_star_posi
 import 'package:horoscope_dribble_app/presentation/home/home_bloc.dart';
 import 'package:horoscope_dribble_app/presentation/home/home_state.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   HomeScreen({@required this.bloc}) : assert(bloc != null);
 
   final HomeBloc bloc;
 
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   final _layer0StarsPosition = starsPositionGenerator(starsQuantity: 128);
   final _layer1StarsPosition = starsPositionGenerator(starsQuantity: 64);
   final _layer2StarsPosition = starsPositionGenerator(starsQuantity: 32);
@@ -38,7 +44,7 @@ class HomeScreen extends StatelessWidget {
 
   List<Widget> layerStars({
     @required Size screenSize,
-    @required double radius,
+    @required double starCenterRadius,
     @required List<Offset> startsPosition,
     @required GyroscopeEventValues rotationEventValues,
     double opacity = 1,
@@ -52,13 +58,14 @@ class HomeScreen extends StatelessWidget {
                 -rotationEventValues.yaw,
                 depth: startsPosition.length.toDouble(),
               ),
-              child: AnimatedStar(
+              child: AnimatableStar(
+                animation: _animation,
                 opacity: opacity,
                 starCenterOffset: Offset(
                   position.dx * screenSize.width,
                   position.dy * screenSize.height,
                 ),
-                starCenterRadius: radius,
+                starCenterRadius: starCenterRadius,
                 starColorList: starColorList,
               ),
             ),
@@ -70,12 +77,27 @@ class HomeScreen extends StatelessWidget {
     HDColors.starColorEnds,
   ];
 
+  AnimationController _controller;
+  Animation<double> _animation;
+
+  @override
+  void initState() {
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 6),
+    )..repeat(reverse: true);
+
+    _animation = CurvedAnimation(parent: _controller, curve: Curves.linear);
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final _size = MediaQuery.of(context).size;
 
     return StreamBuilder<HomeState>(
-      stream: bloc.onNewState,
+      stream: widget.bloc.onNewState,
       builder: (context, snapshot) {
         final _homeData = snapshot.data;
 
@@ -89,21 +111,21 @@ class HomeScreen extends StatelessWidget {
                 ...layerStars(
                   screenSize: _size,
                   opacity: .7,
-                  radius: 1,
+                  starCenterRadius: 1,
                   startsPosition: _layer0StarsPosition,
                   rotationEventValues: _rotationValue,
                 ),
                 ...layerStars(
                   opacity: .8,
                   screenSize: _size,
-                  radius: 1.5,
+                  starCenterRadius: 1.5,
                   startsPosition: _layer1StarsPosition,
                   rotationEventValues: _rotationValue,
                 ),
                 ...layerStars(
                   opacity: .9,
                   screenSize: _size,
-                  radius: 2.25,
+                  starCenterRadius: 2.25,
                   startsPosition: _layer2StarsPosition,
                   rotationEventValues: _rotationValue,
                 ),
