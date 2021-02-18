@@ -33,39 +33,23 @@ class HomeBloc with SubscriptionHolder {
       (gyroscopeEvent, accelerometerEvent) {
         final _previousState = _homeStateSubject.stream.value;
 
-        GyroscopeEventValues _checkPreviousGyroscopeEventValue() {
-          if (_previousState is Success) {
-            return GyroscopeEventValues(
-              roll: gyroscopeEvent.roll +
-                  _previousState.gyroscopeEventValues.roll,
-              pitch: gyroscopeEvent.pitch +
-                  _previousState.gyroscopeEventValues.pitch,
-              yaw: gyroscopeEvent.yaw + _previousState.gyroscopeEventValues.yaw,
-            );
-          } else {
-            return gyroscopeEvent;
-          }
+        if (_previousState is Success) {
+          return Success(
+            gyroscopeEventValues: _checkPreviousGyroscopeEventValue(
+              newEvent: gyroscopeEvent,
+              previousEvent: _previousState.gyroscopeEventValues,
+            ),
+            accelerometerEventValues: _checkPreviousAccelerometerEventValue(
+              newEvent: accelerometerEvent,
+              previousEvent: _previousState.accelerometerEventValues,
+            ),
+          );
+        } else {
+          return Success(
+            gyroscopeEventValues: gyroscopeEvent,
+            accelerometerEventValues: accelerometerEvent,
+          );
         }
-
-        AccelerometerEventValues _checkPreviousAccelerometerEventValue() {
-          if (_previousState is Success) {
-            return AccelerometerEventValues(
-              x: accelerometerEvent.x +
-                  _previousState.accelerometerEventValues.x,
-              y: accelerometerEvent.y +
-                  _previousState.accelerometerEventValues.y,
-              z: accelerometerEvent.z +
-                  _previousState.accelerometerEventValues.z,
-            );
-          } else {
-            return accelerometerEvent;
-          }
-        }
-
-        return Success(
-          gyroscopeEventValues: _checkPreviousGyroscopeEventValue(),
-          accelerometerEventValues: _checkPreviousAccelerometerEventValue(),
-        );
       },
     ).listen(
       addStateListener,
@@ -74,6 +58,26 @@ class HomeBloc with SubscriptionHolder {
       ),
     );
   }
+
+  GyroscopeEventValues _checkPreviousGyroscopeEventValue({
+    @required GyroscopeEventValues previousEvent,
+    @required GyroscopeEventValues newEvent,
+  }) =>
+      GyroscopeEventValues(
+        roll: newEvent.roll + previousEvent.roll,
+        pitch: newEvent.pitch + previousEvent.pitch,
+        yaw: newEvent.yaw + previousEvent.yaw,
+      );
+
+  AccelerometerEventValues _checkPreviousAccelerometerEventValue({
+    @required AccelerometerEventValues previousEvent,
+    @required AccelerometerEventValues newEvent,
+  }) =>
+      AccelerometerEventValues(
+        x: newEvent.x + previousEvent.x,
+        y: newEvent.y + previousEvent.y,
+        z: newEvent.z + previousEvent.z,
+      );
 
   @override
   void disposeAll() {

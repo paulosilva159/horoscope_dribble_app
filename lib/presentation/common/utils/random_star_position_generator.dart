@@ -3,8 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 Offset _randomPositionGenerator() {
-  final xProportion = Random().nextDouble();
-  final yProportion = Random().nextDouble();
+  final xProportion = Random().nextDouble() * 1.5 - 0.25;
+  final yProportion = Random().nextDouble() * 1.5 - 0.25;
 
   return Offset(xProportion, yProportion);
 }

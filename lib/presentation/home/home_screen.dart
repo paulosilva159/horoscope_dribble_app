@@ -1,5 +1,9 @@
+import 'dart:math';
+
+import 'package:domain/model/gyroscope_event_values.dart';
 import 'package:flutter/material.dart';
 import 'package:horoscope_dribble_app/presentation/common/animated_star.dart';
+import 'package:horoscope_dribble_app/presentation/common/rotatable_star.dart';
 import 'package:horoscope_dribble_app/presentation/common/sky_background_view.dart';
 import 'package:horoscope_dribble_app/presentation/common/utils/horoscope_dribble_colors.dart';
 import 'package:horoscope_dribble_app/presentation/common/utils/random_star_position_generator.dart';
@@ -11,27 +15,44 @@ class HomeScreen extends StatelessWidget {
 
   final HomeBloc bloc;
 
-  final _layer0StarsPosition = starsPositionGenerator(starsQuantity: 64);
-  final _layer1StarsPosition = starsPositionGenerator(starsQuantity: 32);
-  final _layer2StarsPosition = starsPositionGenerator(starsQuantity: 16);
+  final _layer0StarsPosition = starsPositionGenerator(starsQuantity: 128);
+  final _layer1StarsPosition = starsPositionGenerator(starsQuantity: 64);
+  final _layer2StarsPosition = starsPositionGenerator(starsQuantity: 32);
 
-  Matrix4 _rotationMatrix4(double roll, double pitch, double yaw) =>
-      Matrix4.identity()
-        ..rotateX(roll)
-        ..rotateY(pitch)
-        ..rotateZ(yaw);
+  Matrix4 _rotationMatrix4(
+    double roll,
+    double pitch,
+    double yaw, {
+    double depth = 1,
+  }) {
+    const angleConversion = 360 / 2 * pi;
+
+    return Matrix4.identity()
+      ..setTranslationRaw(
+        pitch * angleConversion / depth,
+        roll * angleConversion / depth,
+        yaw * angleConversion / depth,
+      );
+  }
 
   List<Widget> layerStars({
-    Size screenSize,
+    @required Size screenSize,
+    @required double radius,
+    @required List<Offset> startsPosition,
+    @required GyroscopeEventValues rotationEventValues,
     double opacity = 1,
-    double radius,
-    List<Offset> startsPosition,
   }) =>
       startsPosition
           .map(
-            (position) => Opacity(
-              opacity: opacity,
-              child: AnimatedStar(
+            (position) => RotatableStar(
+              transform: _rotationMatrix4(
+                rotationEventValues.roll,
+                rotationEventValues.pitch,
+                rotationEventValues.yaw,
+                depth: startsPosition.length.toDouble(),
+              ),
+              star: AnimatedStar(
+                opacity: opacity,
                 starCenterOffset: Offset(
                   position.dx * screenSize.width,
                   position.dy * screenSize.height,
@@ -60,38 +81,31 @@ class HomeScreen extends StatelessWidget {
         if (_homeData is Success) {
           final _rotationValue = _homeData.gyroscopeEventValues;
 
-          final accelerationValues = _homeData.accelerometerEventValues;
-
           return Scaffold(
-            body: Transform(
-              alignment: FractionalOffset.center,
-              transform: _rotationMatrix4(
-                _rotationValue.roll,
-                _rotationValue.pitch,
-                _rotationValue.yaw,
-              ),
-              child: Stack(
-                children: [
-                  const SkyBackgroundView(),
-                  ...layerStars(
-                    screenSize: _size,
-                    opacity: .7,
-                    radius: 1,
-                    startsPosition: _layer0StarsPosition,
-                  ),
-                  ...layerStars(
-                    screenSize: _size,
-                    radius: 1.5,
-                    startsPosition: _layer1StarsPosition,
-                  ),
-                  ...layerStars(
-                    opacity: .7,
-                    screenSize: _size,
-                    radius: 3,
-                    startsPosition: _layer2StarsPosition,
-                  ),
-                ],
-              ),
+            body: Stack(
+              children: [
+                const SkyBackgroundView(),
+                ...layerStars(
+                  screenSize: _size,
+                  opacity: .7,
+                  radius: 1,
+                  startsPosition: _layer0StarsPosition,
+                  rotationEventValues: _rotationValue,
+                ),
+                ...layerStars(
+                  screenSize: _size,
+                  radius: 1.5,
+                  startsPosition: _layer1StarsPosition,
+                  rotationEventValues: _rotationValue,
+                ),
+                ...layerStars(
+                  opacity: .7,
+                  screenSize: _size,
+                  radius: 2,
+                  startsPosition: _layer2StarsPosition,
+                  rotationEventValues: _rotationValue,
+                ),
+              ],
             ),
           );
         } else {

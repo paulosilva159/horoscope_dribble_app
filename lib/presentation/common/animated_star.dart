@@ -10,13 +10,16 @@ class AnimatedStar extends StatefulWidget {
     @required this.starCenterOffset,
     @required this.starCenterRadius,
     @required this.starColorList,
+    @required this.opacity,
   })  : assert(starCenterRadius != null),
         assert(starCenterOffset != null),
-        assert(starColorList != null);
+        assert(starColorList != null),
+        assert(opacity != null);
 
   final Offset starCenterOffset;
   final double starCenterRadius;
   final List<Color> starColorList;
+  final double opacity;
 
   @override
   _AnimatedStarState createState() => _AnimatedStarState();
@@ -71,32 +74,35 @@ class _AnimatedStarState extends State<AnimatedStar>
   }
 
   @override
-  Widget build(BuildContext context) => AnimatedBuilder(
-        animation: _animation,
-        builder: (context, _) {
-          final _angle =
-              _starRotationDirection * _rotationTween.evaluate(_animation);
-          final _size = _sizeTween.evaluate(_animation);
-          final _glowRadiusProportion =
-              _glowRadiusProportionTween.evaluate(_animation);
+  Widget build(BuildContext context) => Opacity(
+        opacity: widget.opacity,
+        child: AnimatedBuilder(
+          animation: _animation,
+          builder: (context, _) {
+            final _angle =
+                _starRotationDirection * _rotationTween.evaluate(_animation);
+            final _size = _sizeTween.evaluate(_animation);
+            final _glowRadiusProportion =
+                _glowRadiusProportionTween.evaluate(_animation);
 
-          return CustomPaint(
-            size: Size.infinite,
-            painter: StarPainter(
-              biggerArmGroupParams: StarArmGroupParams(
-                  centerOffset: widget.starCenterOffset,
-                  angle: _angle,
-                  colorList: widget.starColorList,
-                  armsSize: Size(_size, _size * 3),
-                  glowRadiusProportion: _glowRadiusProportion),
-              smallerArmGroupParams: StarArmGroupParams(
-                  centerOffset: widget.starCenterOffset,
-                  angle: _angle + pi / 18,
-                  colorList: widget.starColorList,
-                  armsSize: Size(_size, _size * 2),
-                  glowRadiusProportion: _glowRadiusProportion),
-            ),
-          );
-        },
+            return CustomPaint(
+              size: Size.infinite,
+              painter: StarPainter(
+                biggerArmGroupParams: StarArmGroupParams(
+                    centerOffset: widget.starCenterOffset,
+                    angle: _angle,
+                    colorList: widget.starColorList,
+                    armsSize: Size(_size, _size * 3),
+                    glowRadiusProportion: _glowRadiusProportion),
+                smallerArmGroupParams: StarArmGroupParams(
+                    centerOffset: widget.starCenterOffset,
+                    angle: _angle + pi / 18,
+                    colorList: widget.starColorList,
+                    armsSize: Size(_size, _size * 2),
+                    glowRadiusProportion: _glowRadiusProportion),
+              ),
+            );
+          },
+        ),
       );
 }

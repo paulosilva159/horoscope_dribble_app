@@ -7,11 +7,10 @@ abstract class HomeState {}
 class Loading implements HomeState {}
 
 class Success implements HomeState {
-  Success(
-      {@required this.gyroscopeEventValues,
-      @required this.accelerometerEventValues})
-      : assert(gyroscopeEventValues != null),
-        assert(accelerometerEventValues != null);
+  Success({
+    @required this.gyroscopeEventValues,
+    this.accelerometerEventValues,
+  }) : assert(gyroscopeEventValues != null);
 
   final GyroscopeEventValues gyroscopeEventValues;
   final AccelerometerEventValues accelerometerEventValues;
