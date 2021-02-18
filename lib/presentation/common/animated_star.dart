@@ -24,7 +24,7 @@ class AnimatedStar extends StatefulWidget {
 
 class _AnimatedStarState extends State<AnimatedStar>
     with SingleTickerProviderStateMixin {
-  final _rotationSide = Random().nextBool() ? 1 : -1;
+  final _starRotationDirection = Random().nextBool() ? 1 : -1;
 
   Tween<double> _rotationTween;
   Tween<double> _glowRadiusProportionTween;
@@ -38,25 +38,25 @@ class _AnimatedStarState extends State<AnimatedStar>
     double initialGlowRadius() {
       final _random = Random().nextDouble();
 
-      if (_random >= .3 && _random < .7) {
+      if (_random >= .5 && _random < .7) {
         return _random;
       } else {
-        return .3;
+        return .5;
       }
     }
 
     _glowRadiusProportionTween =
-        Tween<double>(begin: initialGlowRadius(), end: 1);
-    _rotationTween = Tween<double>(begin: 0, end: pi / 12);
+        Tween<double>(begin: initialGlowRadius(), end: .8);
+    _rotationTween = Tween<double>(begin: -pi / 6, end: pi / 6);
 
     _sizeTween = Tween<double>(
       begin: widget.starCenterRadius,
-      end: widget.starCenterRadius * 1.5,
+      end: widget.starCenterRadius * 1.25,
     );
 
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 3),
+      duration: const Duration(seconds: 6),
     )..repeat(reverse: true);
 
     _animation = CurvedAnimation(parent: _controller, curve: Curves.linear);
@@ -74,7 +74,8 @@ class _AnimatedStarState extends State<AnimatedStar>
   Widget build(BuildContext context) => AnimatedBuilder(
         animation: _animation,
         builder: (context, _) {
-          final _angle = _rotationSide * _rotationTween.evaluate(_animation);
+          final _angle =
+              _starRotationDirection * _rotationTween.evaluate(_animation);
           final _size = _sizeTween.evaluate(_animation);
           final _glowRadiusProportion =
               _glowRadiusProportionTween.evaluate(_animation);

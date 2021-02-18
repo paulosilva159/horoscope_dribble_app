@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:domain/data_repository/sensors_events_data_repository.dart';
+import 'package:domain/model/accelerometer_event_values.dart';
 import 'package:domain/model/gyroscope_event_values.dart';
 import 'package:horoscope_dribble_app/data/sensors_events/data_source/sensors_events_data_source.dart';
 import 'package:meta/meta.dart';
@@ -12,6 +13,10 @@ class SensorsEventsRepository implements SensorsEventsDataRepository {
   final SensorsEventsDataSource dataSource;
 
   @override
-  Future<Stream<GyroscopeEventValues>> getGyroscopeValues() =>
+  Stream<GyroscopeEventValues> getGyroscopeValues() =>
       dataSource.getGyroscopeValues();
+
+  @override
+  Stream<AccelerometerEventValues> getAccelerometerValues() =>
+      dataSource.getAccelerometerValues();
 }

@@ -1,9 +1,13 @@
 import 'dart:async';
 
+import 'package:domain/model/accelerometer_event_values.dart';
+
 import '../model/gyroscope_event_values.dart';
 
 abstract class SensorsEventsDataRepository {
   const SensorsEventsDataRepository();
 
-  Future<Stream<GyroscopeEventValues>> getGyroscopeValues();
+  Stream<GyroscopeEventValues> getGyroscopeValues();
+
+  Stream<AccelerometerEventValues> getAccelerometerValues();
 }
