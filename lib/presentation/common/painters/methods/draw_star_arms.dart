@@ -11,6 +11,7 @@ void drawStarArms(
   Canvas canvas,
   Size size, {
   StarArmGroupParams params,
+  bool isIntense = false,
 }) {
   assert(params.glowRadiusProportion >= 0.1,
       'glowRadiusProportion should not be smaller than 0.1 for visual effects');
@@ -94,11 +95,26 @@ void drawStarArms(
   }
 
   canvas
-    ..transform(rotateArmGroup(params.angle))
+    ..transform(
+      rotateArmGroup(params.angle),
+    )
     ..drawPath(
       params.armType == ArmType.rounded
           ? roundedArmPath(params.armsSize)
           : pointArmPath(params.armsSize),
       armPaint,
     );
+
+  if (isIntense) {
+    canvas
+      ..transform(
+        rotateArmGroup(0),
+      )
+      ..drawPath(
+        params.armType == ArmType.rounded
+            ? roundedArmPath(params.armsSize)
+            : pointArmPath(params.armsSize),
+        armPaint,
+      );
+  }
 }

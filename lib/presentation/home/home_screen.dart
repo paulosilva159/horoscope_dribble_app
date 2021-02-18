@@ -4,6 +4,7 @@ import 'package:domain/model/gyroscope_event_values.dart';
 import 'package:flutter/material.dart';
 import 'package:horoscope_dribble_app/presentation/common/animated_star.dart';
 import 'package:horoscope_dribble_app/presentation/common/rotatable_star.dart';
+import 'package:horoscope_dribble_app/presentation/common/signs/animated_cancer_sign.dart';
 import 'package:horoscope_dribble_app/presentation/common/sky_background_view.dart';
 import 'package:horoscope_dribble_app/presentation/common/utils/horoscope_dribble_colors.dart';
 import 'package:horoscope_dribble_app/presentation/common/utils/random_star_position_generator.dart';
@@ -44,14 +45,14 @@ class HomeScreen extends StatelessWidget {
   }) =>
       startsPosition
           .map(
-            (position) => RotatableStar(
+            (position) => RotatableWidget(
               transform: _rotationMatrix4(
-                rotationEventValues.roll,
-                rotationEventValues.pitch,
-                rotationEventValues.yaw,
+                -rotationEventValues.roll,
+                -rotationEventValues.pitch,
+                -rotationEventValues.yaw,
                 depth: startsPosition.length.toDouble(),
               ),
-              star: AnimatedStar(
+              child: AnimatedStar(
                 opacity: opacity,
                 starCenterOffset: Offset(
                   position.dx * screenSize.width,
@@ -93,17 +94,36 @@ class HomeScreen extends StatelessWidget {
                   rotationEventValues: _rotationValue,
                 ),
                 ...layerStars(
+                  opacity: .8,
                   screenSize: _size,
                   radius: 1.5,
                   startsPosition: _layer1StarsPosition,
                   rotationEventValues: _rotationValue,
                 ),
                 ...layerStars(
-                  opacity: .7,
+                  opacity: .9,
                   screenSize: _size,
-                  radius: 2,
+                  radius: 2.25,
                   startsPosition: _layer2StarsPosition,
                   rotationEventValues: _rotationValue,
+                ),
+                Positioned(
+                  top: _size.height * .15,
+                  left: _size.width * .15,
+                  child: RotatableWidget(
+                    transform: _rotationMatrix4(
+                      _rotationValue.roll,
+                      _rotationValue.pitch,
+                      _rotationValue.yaw,
+                      depth: 180,
+                    ),
+                    child: AnimatedCancerSign(
+                      size: Size(
+                        _size.width * .7,
+                        _size.width * .7,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),

@@ -21,19 +21,17 @@ class StarPainter extends CustomPainter {
       params: biggerArmGroupParams,
     );
 
-    if (smallerArmGroupParams.armsSize.width >= 2.5) {
-      drawStarArms(
-        canvas,
-        size,
-        params: smallerArmGroupParams.copyWith(
-          armsSize: smallerArmGroupParams.armsSize.width <= 4
-              ? Size(smallerArmGroupParams.armsSize.width,
-                  smallerArmGroupParams.armsSize.height * 2)
-              : smallerArmGroupParams.armsSize,
-          angle: smallerArmGroupParams.angle - biggerArmGroupParams.angle,
-        ),
-      );
-    }
+    drawStarArms(
+      canvas,
+      size,
+      params: smallerArmGroupParams.copyWith(
+        armsSize: smallerArmGroupParams.armsSize.width <= 4
+            ? Size(smallerArmGroupParams.armsSize.width,
+                smallerArmGroupParams.armsSize.height * 2)
+            : smallerArmGroupParams.armsSize,
+        angle: smallerArmGroupParams.angle - biggerArmGroupParams.angle,
+      ),
+    );
   }
 
   @override

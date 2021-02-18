@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 
-class RotatableStar extends StatelessWidget {
-  const RotatableStar({
+class RotatableWidget extends StatelessWidget {
+  const RotatableWidget({
     @required this.transform,
-    @required this.star,
+    @required this.child,
   })  : assert(transform != null),
-        assert(star != null);
+        assert(child != null);
 
   final Matrix4 transform;
-  final Widget star;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) => Transform(
         alignment: FractionalOffset.center,
         transform: transform,
-        child: star,
+        child: child,
       );
 }

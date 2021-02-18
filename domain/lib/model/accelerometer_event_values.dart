@@ -9,12 +9,7 @@ class AccelerometerEventValues {
         assert(y != null),
         assert(z != null);
 
-  /// Acceleration in x-axis
   final double x;
-
-  /// Acceleration in y-axis
   final double y;
-
-  /// Acceleration in z-axis
   final double z;
 }

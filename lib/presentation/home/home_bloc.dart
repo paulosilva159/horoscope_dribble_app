@@ -25,39 +25,40 @@ class HomeBloc with SubscriptionHolder {
 
   Stream<HomeState> get onNewState => _homeStateSubject.stream;
 
-  void _fetchSensorsEventsData(void Function(HomeState) addStateListener) {
-    Rx.combineLatest2<GyroscopeEventValues, AccelerometerEventValues,
-        HomeState>(
-      rotatePhoneUC.getStream(),
-      acceleratePhoneUC.getStream(),
-      (gyroscopeEvent, accelerometerEvent) {
-        final _previousState = _homeStateSubject.stream.value;
+  void _fetchSensorsEventsData(void Function(HomeState) addStateListener) =>
+      Rx.combineLatest2<GyroscopeEventValues, AccelerometerEventValues,
+              HomeState>(
+        rotatePhoneUC.getStream(),
+        acceleratePhoneUC.getStream(),
+        (gyroscopeEvent, accelerometerEvent) {
+          final _previousState = _homeStateSubject.stream.value;
 
-        if (_previousState is Success) {
-          return Success(
-            gyroscopeEventValues: _checkPreviousGyroscopeEventValue(
-              newEvent: gyroscopeEvent,
-              previousEvent: _previousState.gyroscopeEventValues,
+          if (_previousState is Success) {
+            return Success(
+              gyroscopeEventValues: _checkPreviousGyroscopeEventValue(
+                newEvent: gyroscopeEvent,
+                previousEvent: _previousState.gyroscopeEventValues,
+              ),
+              accelerometerEventValues: _checkPreviousAccelerometerEventValue(
+                newEvent: accelerometerEvent,
+                previousEvent: _previousState.accelerometerEventValues,
+              ),
+            );
+          } else {
+            return Success(
+              gyroscopeEventValues: gyroscopeEvent,
+              accelerometerEventValues: accelerometerEvent,
+            );
+          }
+        },
+      )
+          .listen(
+            addStateListener,
+            onError: (error) => addStateListener(
+              Error(error: error),
             ),
-            accelerometerEventValues: _checkPreviousAccelerometerEventValue(
-              newEvent: accelerometerEvent,
-              previousEvent: _previousState.accelerometerEventValues,
-            ),
-          );
-        } else {
-          return Success(
-            gyroscopeEventValues: gyroscopeEvent,
-            accelerometerEventValues: accelerometerEvent,
-          );
-        }
-      },
-    ).listen(
-      addStateListener,
-      onError: (error) => addStateListener(
-        Error(error: error),
-      ),
-    );
-  }
+          )
+          .addTo(subscriptions);
 
   GyroscopeEventValues _checkPreviousGyroscopeEventValue({
     @required GyroscopeEventValues previousEvent,

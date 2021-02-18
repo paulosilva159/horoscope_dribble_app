@@ -49,7 +49,8 @@ class _AnimatedStarState extends State<AnimatedStar>
     }
 
     _glowRadiusProportionTween =
-        Tween<double>(begin: initialGlowRadius(), end: .8);
+        Tween<double>(begin: initialGlowRadius(), end: 1);
+
     _rotationTween = Tween<double>(begin: -pi / 6, end: pi / 6);
 
     _sizeTween = Tween<double>(
@@ -89,17 +90,19 @@ class _AnimatedStarState extends State<AnimatedStar>
               size: Size.infinite,
               painter: StarPainter(
                 biggerArmGroupParams: StarArmGroupParams(
-                    centerOffset: widget.starCenterOffset,
-                    angle: _angle,
-                    colorList: widget.starColorList,
-                    armsSize: Size(_size, _size * 3),
-                    glowRadiusProportion: _glowRadiusProportion),
+                  centerOffset: widget.starCenterOffset,
+                  angle: _angle,
+                  colorList: widget.starColorList,
+                  armsSize: Size(_size, _size * 3),
+                  glowRadiusProportion: _glowRadiusProportion,
+                ),
                 smallerArmGroupParams: StarArmGroupParams(
-                    centerOffset: widget.starCenterOffset,
-                    angle: _angle + pi / 18,
-                    colorList: widget.starColorList,
-                    armsSize: Size(_size, _size * 2),
-                    glowRadiusProportion: _glowRadiusProportion),
+                  centerOffset: widget.starCenterOffset,
+                  angle: _angle + pi / 18,
+                  colorList: widget.starColorList,
+                  armsSize: Size(_size, _size * 2),
+                  glowRadiusProportion: _glowRadiusProportion,
+                ),
               ),
             );
           },
